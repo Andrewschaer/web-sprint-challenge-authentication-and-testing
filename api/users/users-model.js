@@ -11,8 +11,8 @@ function findByUsername(username) {
 }
 
 function findById(id) {
-    return db('users as u')
-        .where('username.id', id)
+    return db('users')
+        .where('users.id', id)
         .first();
 }
 

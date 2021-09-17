@@ -4,10 +4,11 @@ const checkUsernameExists = (req, res, next) => {
     const { username } = req.body
     User.findByUsername(username)
       .then(possibleUser => {
-        if (possibleUser.username) {
+        if (possibleUser !== undefined) {
+            req.body.foundUser = possibleUser
             next();
         } else {
-          next({ status: 401, message: 'Invalid credentials'});
+          next({ status: 401, message: 'invalid credentials'});
         }
       })
       .catch(next);
@@ -26,7 +27,7 @@ const checkUsernameFree = (req, res, next) => {
       .catch(next);
 }
 
-const validateNewUser = (req, res, next) => {
+const validateUser = (req, res, next) => {
     if (!req.body.username ||
         req.body.username === undefined ||
         req.body.username === null ||
@@ -39,4 +40,4 @@ const validateNewUser = (req, res, next) => {
     }
 }
 
-module.exports = { checkUsernameExists, checkUsernameFree, validateNewUser }
+module.exports = { checkUsernameExists, checkUsernameFree, validateUser }

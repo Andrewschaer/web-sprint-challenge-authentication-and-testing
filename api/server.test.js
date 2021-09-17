@@ -123,3 +123,33 @@ describe('[POST] /api/auth/login', () => {
       expect(res.body.message).toBe('invalid credentials')
   })
 })
+
+describe('[GET] /api/jokes', () => {
+  test('responds with 401 and correct message when token is not provided', async () => {
+      const res = await request(server)
+        .get('/api/jokes')
+      expect(res.status).toBe(401)
+      expect(res.body.message).toBe('token required')
+  })
+  test('responds with 401 and correct message when token is not valid', async () => {
+    const res = await request(server)
+      .get('/api/jokes')
+      .set('Authorization', 'invalidToken')
+    expect(res.status).toBe(401)
+    expect(res.body.message).toBe('token invalid')
+  })
+  test('responds with 200 and receives jokes data when valid token is provided', async () => {
+    /* Since we cannot change the knex file I cannot seed data for a preregistered user - thus I must first register a user here and log them in before testing successful get request*/
+    await request(server)
+      .post('/api/auth/register')
+      .send({ username: 'testU1', password: 'testP1'})
+    let res = await request(server)
+      .post('/api/auth/login')
+      .send({ username: 'testU1', password: 'testP1'})
+      
+    res = await request(server)
+      .get('/api/jokes')
+      .set('Authorization', res.body.token)
+    expect(res.status).toBe(200)
+    })
+})

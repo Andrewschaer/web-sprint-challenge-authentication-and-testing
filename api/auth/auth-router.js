@@ -1,4 +1,8 @@
 const router = require('express').Router();
+const tokenBuilder = require('./token-builder');
+const bcrypt = require('bcryptjs');
+const User = require('../users/users-model');
+
 
 router.post('/register', (req, res) => {
   res.end('implement register, please!');
